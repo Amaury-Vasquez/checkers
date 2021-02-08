@@ -150,8 +150,11 @@ export const useGameBoard = (boardDimension: number = 10) => {
   };
 
   const move = (board: SquareValues[][], square: SquareValues) => {
-    const { x, y } = square;
+    // Function used to move pieces in the board, returns 1 if there is a
+    // piece capture and piece move, 0 if theres is a piece move, -1 if nothing happens
+
     if (prev) {
+      const { x, y } = square;
       const dest = prev.marked.find((item) => item.x === x && item.y === y);
       const { queen, whitePiece } = prev.touched.piece;
       if (dest) {
@@ -167,25 +170,46 @@ export const useGameBoard = (boardDimension: number = 10) => {
         board[prev.touched.y][prev.touched.x].optional = false;
 
         board[dest.y][dest.x].piece.whitePiece = whitePiece;
-        board[dest.y][dest.x].piece.queen = queen;
+        board[dest.y][dest.x].piece.queen =
+          (dest.y === 0 && !whitePiece) ||
+          (dest.y === boardDimension - 1 && whitePiece)
+            ? true
+            : queen;
         board[dest.y][dest.x].active = true;
         board[dest.y][dest.x].selected = false;
 
-        return true;
+        const sumx = dest.x - prev.touched.x,
+          sumy = dest.y - prev.touched.y;
+        if (Math.abs(sumx) > 1 && Math.abs(sumy) > 1) {
+          const i = sumy > 0 ? prev.touched.y + 1 : prev.touched.y - 1,
+            j = sumx > 0 ? prev.touched.x + 1 : prev.touched.x - 1,
+            aux = board[i][j];
+          console.log(prev.touched, aux);
+          aux.active = false;
+          aux.piece.whitePiece = undefined;
+          aux.piece.queen = false;
+          return 1;
+        }
+        return 0;
       }
     }
-    return false;
+    return -1;
   };
+
   const callback = (square: SquareValues) => {
     const { active } = square;
     const tmpBoard = [...gameBoard];
-    if (active) {
+    if (active && square.piece.whitePiece === turn) {
       if (prev) setOptional(tmpBoard, prev.touched, false);
       const aux: SquareValues[] = setOptional(tmpBoard, square);
       setPrev({ touched: square, marked: aux });
-    } else if (prev && move(tmpBoard, square)) {
-      setOptional(tmpBoard, prev.touched);
-      setPrev(undefined);
+    } else if (prev && prev.touched.piece.whitePiece === turn) {
+      const capture = move(tmpBoard, square);
+      if (capture >= 0) {
+        if (capture !== 1) setTurn(!turn);
+        setOptional(tmpBoard, prev.touched);
+        setPrev(undefined);
+      }
     }
     setGameBoard(tmpBoard);
   };
@@ -193,6 +217,8 @@ export const useGameBoard = (boardDimension: number = 10) => {
   // State
 
   const [gameBoard, setGameBoard] = useState<SquareValues[][]>(initialBoard());
+  // turn is true when is whitePieces turn, false when darkPieces turn
+  const [turn, setTurn] = useState(true);
   const [prev, setPrev] = useState<
     { touched: SquareValues; marked: Array<SquareValues> } | undefined
   >();
