@@ -5,8 +5,7 @@ import { Board } from "../Board";
 import { useGameBoard } from "../../hooks/useGameBoard";
 
 export const Game = () => {
-  const boardDimension = 10;
-  const { gameBoard, callback } = useGameBoard(boardDimension);
+  const { gameBoard, callback, boardDimension } = useGameBoard();
   return (
     <Container>
       <Board
