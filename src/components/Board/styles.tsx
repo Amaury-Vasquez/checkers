@@ -11,7 +11,6 @@ export const GameBoard = styled.div<{ dimension: number }>`
   grid-template-rows: ${(props) => `repeat(${props.dimension}, 1fr)`};
   justify-content: center;
   align-items: center;
-  border: 1px solid black;
-  & > div {
-  }
+  background-color: var(--brown);
+  padding: 4px;
 `;
