@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 import { SquareValues } from "../../interfaces";
-export const useGameBoard = (boardDimension: number = 10) => {
+
+export const useGameBoard = () => {
+  // const
+  const boardDimension = 8;
+
   // Functions
   const initialBoard = () => {
     const tmpBoard: SquareValues[][] = [[]];
@@ -20,10 +25,10 @@ export const useGameBoard = (boardDimension: number = 10) => {
           x: j,
           y: i,
           whiteSquare: color,
-          active: (i < 4 && !color) || (i > 5 && !color),
+          active: (i < 3 && !color) || (i > 4 && !color),
           piece: {
             whitePiece:
-              i < 4 && !color ? true : i > 5 && !color ? false : undefined,
+              i < 3 && !color ? true : i > 4 && !color ? false : undefined,
             queen: false,
           },
 
@@ -184,7 +189,6 @@ export const useGameBoard = (boardDimension: number = 10) => {
           const i = sumy > 0 ? prev.touched.y + 1 : prev.touched.y - 1,
             j = sumx > 0 ? prev.touched.x + 1 : prev.touched.x - 1,
             aux = board[i][j];
-          console.log(prev.touched, aux);
           aux.active = false;
           aux.piece.whitePiece = undefined;
           aux.piece.queen = false;
@@ -207,6 +211,10 @@ export const useGameBoard = (boardDimension: number = 10) => {
       const capture = move(tmpBoard, square);
       if (capture >= 0) {
         if (capture !== 1) setTurn(!turn);
+        else {
+          if (turn) setDarkCount(() => darkCount + 1);
+          else setWhiteCount(() => whiteCount + 1);
+        }
         setOptional(tmpBoard, prev.touched);
         setPrev(undefined);
       }
@@ -216,18 +224,51 @@ export const useGameBoard = (boardDimension: number = 10) => {
 
   // State
 
+  const [reset, setReset] = useState(false);
   const [gameBoard, setGameBoard] = useState<SquareValues[][]>(initialBoard());
-  // turn is true when is whitePieces turn, false when darkPieces turn
   const [turn, setTurn] = useState(true);
+  // turn is true when is whitePieces turn, false when darkPieces turn
+  const [whiteCount, setWhiteCount] = useState(0);
+  // counts whitePieces captured
+  const [darkCount, setDarkCount] = useState(0);
+  // counts darkPieces captured
   const [prev, setPrev] = useState<
     { touched: SquareValues; marked: Array<SquareValues> } | undefined
   >();
 
   // Effects
 
-  // useEffect(() => {
-  //   if (prev)
-  //     console.log(prev.touched !== gameBoard[prev.touched.y][prev.touched.x]);
-  // }, [prev]);
-  return { gameBoard, callback };
+  useEffect(() => {
+    if (whiteCount === 20 || darkCount === 20) {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: `Congrats ${
+          whiteCount === 20 ? "white pieces" : "dark pieces"
+        } player, you had won`,
+        showConfirmButton: true,
+        timer: 3000,
+      });
+    }
+  }, [whiteCount, darkCount]);
+
+  useEffect(() => {
+    if (reset) {
+      setReset(false);
+      setGameBoard(initialBoard());
+      setWhiteCount(0);
+      setDarkCount(0);
+      setPrev(undefined);
+      setTurn(true);
+    }
+  }, [
+    reset,
+    setReset,
+    setGameBoard,
+    setWhiteCount,
+    setDarkCount,
+    setPrev,
+    setTurn,
+  ]);
+  return { gameBoard, callback, setReset, boardDimension };
 };
