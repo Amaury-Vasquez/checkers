@@ -8,12 +8,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "chekers.png",
+      "src": "checkers.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "chekers.png",
+      "src": "checkers.png",
       "type": "image/png",
       "sizes": "512x512"
     }
