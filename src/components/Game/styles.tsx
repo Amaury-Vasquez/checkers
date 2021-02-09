@@ -19,4 +19,13 @@ export const Content = styled.div`
   box-sizing: border-box;
   box-shadow: var(--shadow);
   padding: 10px;
+
+  @media screen and (max-width: 450px) {
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-content: center;
+    align-items: center;
+  }
 `;

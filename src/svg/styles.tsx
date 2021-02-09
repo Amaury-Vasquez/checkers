@@ -10,4 +10,8 @@ export const Svg = styled.svg<{ size?: string }>`
     cursor: pointer;
     transition: transform 0.1s ease;
   }
+  @media screen and (max-width: 450px) {
+    width: 25px;
+    height: 25px;
+  }
 `;
