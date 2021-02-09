@@ -1,18 +1,22 @@
 import React from "react";
 
-import { Container } from "./styles";
+import { Container, Content } from "./styles";
 import { Board } from "../Board";
 import { useGameBoard } from "../../hooks/useGameBoard";
+import { Panel } from "../Panel";
 
 export const Game = () => {
   const { gameBoard, callback, boardDimension } = useGameBoard();
   return (
     <Container>
-      <Board
-        callback={callback}
-        gameBoard={gameBoard}
-        boardDimension={boardDimension}
-      />
+      <Content>
+        <Board
+          callback={callback}
+          gameBoard={gameBoard}
+          boardDimension={boardDimension}
+        />
+        <Panel />
+      </Content>
     </Container>
   );
 };
