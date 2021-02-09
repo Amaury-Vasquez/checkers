@@ -1,16 +1,14 @@
 import styled from "styled-components";
 
 export const GameBoard = styled.div<{ dimension: number }>`
-  width: 35vw;
-  height: 35vw;
-  box-shadow: var(--shadow);
+  width: 30vw;
+  height: 30vw;
   box-sizing: border-box;
+  border: 1px solid var(--gray);
   border-radius: 5px;
   display: grid;
   grid-template-columns: ${(props) => `repeat(${props.dimension}, 1fr)`};
   grid-template-rows: ${(props) => `repeat(${props.dimension}, 1fr)`};
   justify-content: center;
   align-items: center;
-  background-color: var(--brown);
-  padding: 4px;
 `;
