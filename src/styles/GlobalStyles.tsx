@@ -3,6 +3,9 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyles = createGlobalStyle`
   html {
     box-sizing: border-box;
+    --dark: #121013;
+    --gray: rgba(189, 195, 199, 1);
+    --light-gray: rgba(238, 238, 238, 1);
     --brown: #663f3f;
     --dark-square: rgb(184,139,74);
     --white-square: rgb(227,193,111);
